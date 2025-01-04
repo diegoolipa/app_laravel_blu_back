@@ -59,6 +59,7 @@ class AuthController extends Controller
     }
     public function funProfile(Request $request) {
         return $this->successResponse($request, 200);
+        //ll
     }
     public function funLogout(Request $request) {}
 }
