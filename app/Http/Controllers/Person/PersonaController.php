@@ -57,29 +57,37 @@ class PersonaController extends Controller
     public function actualizar(Request $request, $id_persona){
         //? Validar datos de entrada
         $request->validate([
-            'name' => 'sometimes|string|max:100|min:2',
-            'email' => 'sometimes|email|unique:users,email,',
+            'name' => 'string|max:100|min:2',
+            // 'email' => 'email|unique:users',
             'password' => 'nullable|same:c_password',
         ]);
-
         try {
             //? Buscar al usuario
-            $usuario = User::findOrFail($id_persona);
-
-            //? Actualizar campos si están presentes
-            if ($request->has('name')) {
-                $usuario->name = $request->name;
+            $usuario = User::find($id_persona);
+            if (!$usuario) {
+                throw new Exception("Persona no encontrada");
             }
-            if ($request->has('email')) {
-                $usuario->email = $request->email;
+
+            //? Construir los datos a actualizar dinámicamente
+            $dataToUpdate = [];
+            if ($request->has('name') && $usuario->name !== $request->name) {
+                $dataToUpdate['name'] = $request->name;
+            }
+            if ($request->has('email') && $usuario->email !== $request->email) {
+                $emailExists = User::where('email', $request->email)->exists();
+                if ($emailExists) {
+                    throw new Exception("El correo electrónico ya está registrado.");
+                }
+                $dataToUpdate['email'] = $request->email;
             }
             if ($request->has('password')) {
-                $usuario->password = Hash::make($request->password);
+                $dataToUpdate['password'] = Hash::make($request->password);
             }
 
-            //? Guardar cambios
-            $usuario->save();
-
+            //? Realizar la actualización solo si hay datos que cambiar
+            if (!empty($dataToUpdate)) {
+                $usuario->update($dataToUpdate);
+            }
             return $this->successResponse('Usuario actualizado con éxito', 200);
         } catch (Exception $e) {
             return $this->errorResponse($e->getMessage(), 400);

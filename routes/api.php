@@ -30,8 +30,10 @@ Route::get("/usuario", [UsuarioController::class, 'listar']);
 // Route::dete("/usuario/{id}", [UsuarioController::class, 'eliminar']);
 
 // CRUD Persona Usuario
-Route::get("/persona", [PersonaController::class, 'listar']);
-Route::post("/persona", [PersonaController::class, 'gardar']);
-Route::get("/persona/{id}", [PersonaController::class, 'mostrar']);
-Route::put("/persona/{id}", [PersonaController::class, 'actualizar']);
-Route::dete("/persona/{id}", [PersonaController::class, 'eliminar']);
+// Route::middleware('auth:sanctum')->group(function(){
+    Route::get("/persona", [PersonaController::class, 'listar']);
+    Route::post("/persona", [PersonaController::class, 'guardar']);
+    Route::get("/persona/{id}", [PersonaController::class, 'mostrar']);
+    Route::put("/persona/{id}", [PersonaController::class, 'actualizar']);
+    Route::delete("/persona/{id}", [PersonaController::class, 'eliminar']);
+// });
