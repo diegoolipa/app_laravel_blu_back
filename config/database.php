@@ -93,7 +93,7 @@ return [
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'public',
+            'search_path' => 'salomon,sion,public',  // Define los tres esquemas en orden de búsqueda
             'sslmode' => 'prefer',
         ],
 
