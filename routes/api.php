@@ -22,7 +22,7 @@ Route::prefix('v1/auth')->group(function () {
     });
 });
 
-// CRUD Usuario
+// !CRUD Usuario
 Route::get("/usuario", [UsuarioController::class, 'listar']);
 // Route::post("/usuario", [UsuarioController::class, 'gardar']);
 // Route::get("/usuario/{id}", [UsuarioController::class, 'mostrar']);
@@ -37,3 +37,8 @@ Route::get("/usuario", [UsuarioController::class, 'listar']);
     Route::put("/persona/{id}", [PersonaController::class, 'actualizar']);
     Route::delete("/persona/{id}", [PersonaController::class, 'eliminar']);
 // });
+
+Route::prefix('person')->group(function(){
+
+});
+

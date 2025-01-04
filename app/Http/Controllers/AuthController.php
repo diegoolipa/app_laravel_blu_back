@@ -10,27 +10,32 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function  funLogin(Request $request) {
+    public function  funLogin(Request $request)
+    {
+
         $credenciales = $request->validate([
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        //?autenticacion
-        if (!Auth::attempt($credenciales)) {
-            return response()->json([
-                'message' => 'Credenciales invalidas',401
-            ]);
+        try {
+            //?autenticacion
+            if (!Auth::attempt($credenciales)) {
+                throw new Exception("Credenciales invalidas", 401);
+            }
+            //?generar token
+            $token = $request->user()->createToken('auth_token')->plainTextToken;
+            $data = [
+                'access_token' => $token,
+                'usuario' => $request->user()
+            ];
+            return $this->successResponse($data, 201);
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
         }
-        //?generar token
-        $token = $request->user()->createToken('auth_token')->plainTextToken;
-        return response([
-            'access_token'=>$token,
-            'usuario' =>$request->user()
-        ],201);
-
     }
-    public function funRegister(Request $request) {
+    public function funRegister(Request $request)
+    {
 
         //? valida datos
         $request->validate([
@@ -47,17 +52,13 @@ class AuthController extends Controller
             $usuario->save();
 
             //? responder
-            return response()->json([
-                'message' => 'Usuario creado con éxito',
-            ]);
-
+            return $this->successResponse('Usuario creado con éxito', 200);
         } catch (Exception $e) {
-            return response()->json([
-                'estatus' => 'error',
-                'message' => 'Usuario creado con éxito',
-            ]);
+            return $this->errorResponse($e->getMessage(), 400);
         };
     }
-    public function funProfile(Request $request) {}
+    public function funProfile(Request $request) {
+        return $this->successResponse($request, 200);
+    }
     public function funLogout(Request $request) {}
 }
