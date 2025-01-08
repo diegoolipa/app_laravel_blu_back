@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function  funLogin(Request $request)
+    public function login(Request $request)
     {
 
         $credenciales = $request->validate([
@@ -31,10 +32,10 @@ class AuthController extends Controller
             ];
             return $this->successResponse($data, 201);
         } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+            return $this->errorResponse($e->getMessage(), 400   );
         }
     }
-    public function funRegister(Request $request)
+    public function register(Request $request)
     {
 
         //? valida datos
@@ -57,9 +58,9 @@ class AuthController extends Controller
             return $this->errorResponse($e->getMessage(), 400);
         };
     }
-    public function funProfile(Request $request) {
-        return $this->successResponse($request, 200);
+    public function profile(Request $request) {
+        return $this->successResponse($request->user(), 200);
         //ll
     }
-    public function funLogout(Request $request) {}
+    public function logout(Request $request) {}
 }
